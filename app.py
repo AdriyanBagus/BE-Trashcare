@@ -235,6 +235,16 @@ def check_admin_login(username, password):
         cursor.close()
         connection.close()
 
+def perform_login(username, password):
+    # Lakukan verifikasi login sesuai kebutuhan proyek Anda
+    # Misalnya, bandingkan dengan data yang tersimpan di database
+
+    # Contoh sederhana: Jika username dan password sesuai, kembalikan sukses
+    if username == 'user' and password == 'pass':
+        return True, 'Login successful'
+    else:
+        return False, 'Invalid username or password'
+
 # Route to render the form
 @app.route('/')
 def index():
@@ -555,6 +565,22 @@ def admin_login():
     success, message = check_admin_login(username, password)
     return jsonify({'success': success, 'message': message})
 
+# Endpoint untuk login mobile
+@app.route('/api/login-mobile', methods=['POST'])
+def login_mobile():
+    try:
+        data = request.get_json()
+        username = data['username']
+        password = data['password']
+
+        success, message = perform_login(username, password)
+
+        if success:
+            return jsonify({'status': 'success'}), 200
+        else:
+            return jsonify({'status': 'failure', 'message': message}), 401
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 # Model deteksi web
 model_deteksi_sampah = load_model('model/model_web.h5')
